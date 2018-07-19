@@ -54,22 +54,14 @@ function GetCoins()
 	this.ShowCoinLost = ShowCoinLost;
 	this.GhostCoin = GhostCoin;
 	this.CoinImage = "img src='images/coin.png' height='40' ";
-
+        
 	function SetPossible(Round)
 	{
 		$("#coins_lost").html('');
 		$("#coins_coll").html('');
 
 		this.Shown = 0;
-		//this.Possible = Math.floor((Math.random()*9)+1);
-
-		GetSeq = 0;
-		$.getJSON("data.php", {source:"SEQ",action:Round}, 
-		function(Data)
-		{
-			GetSeq = Data.Coins;
-		});
-		this.Possible = GetSeq;
+		//this.Possible = Math.floor((Math.random()*9)+1);                
 	}
 	function ShowCoinCollected()
 	{
