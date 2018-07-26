@@ -10,6 +10,10 @@ var CurrentBlock = new Block();
 //
 $(document).ready(function ()
 {
+    $('#finish_button').click(function () {
+        window.location.href = GameConfig.ExitURL;
+    });
+
     // slow client/server processing means forced sync processing on all ajax calls.
     $.ajaxSetup({async: false});
 
@@ -99,7 +103,7 @@ $(document).ready(function ()
                 id: $("#user").val(),
             },
             success: function (Data) {
-                
+
                 Data = JSON.parse(Data);
                 if (Data.ID != undefined)
                 {
@@ -117,6 +121,14 @@ $(document).ready(function ()
                         $("#tcl").hide();
                     if (Data.showCS == false)
                         $("#cs").hide();
+                    if (Data.showCB == false)
+                        $("#bank").hide();
+                    if (Data.showRCP == false)
+                        $("#rcp").hide();
+                    if (Data.showRCC == false)
+                        $("#rcc").hide();
+                    if (Data.showRCNC == false)
+                        $("#rcnc").hide();
                 }
                 if (GameConfig.LoggedUser.length == 0)
                 {
@@ -125,7 +137,7 @@ $(document).ready(function ()
                 {
                     $("#landing").hide();
                     if (GameConfig.CurrentScreen == "") {
-                        GameConfig.CurrentScreen = "CONSENT";
+                        GameConfig.CurrentScreen = "INTRO";//deleted "CONSENT" and replaced to "INTRO"
                     }
                 }
                 //UserLogin End
@@ -143,8 +155,11 @@ $(document).ready(function ()
                 GameConfig.AnimateCoinInterval = Data.Config.AnimateCoinInterval;
                 GameConfig.AnimateCoinSpeed = Data.Config.AnimateCoinSpeed;
                 GameConfig.AnimateCoinFade = Data.Config.AnimateCoinFade;
+                GameConfig.Penalty = Data.Config.Penalty;///+++
+                GameConfig.ExitURL = Data.Config.ExitURL;///+++
 
-                CurrentBlock.Size = parseInt(Data.log_block.Size);
+                if (Data.log_block)
+                    CurrentBlock.Size = parseInt(Data.log_block.Size);
 
                 // update screen intro info
                 $(".rounds").each(function () {
@@ -459,8 +474,8 @@ function CoinsAppear()
     var CoinDrops = new GetCoins();
 
     // generate round data & log it
-    
-    CoinDrops.SetPossible(CoinTots.CurrentRound);    
+
+    CoinDrops.SetPossible(CoinTots.CurrentRound);
 
     $.ajax({
         url: "data.php",
@@ -545,7 +560,7 @@ function BankCoins()
     CoinTots.Possible += CoinRound.Possible;
     CoinTots.Collected += CoinRound.Collected;
     CoinTots.Lost += CoinRound.Lost;
-    CoinTots.Bank += CoinRound.Collected;
+    CoinTots.Bank += Number((CoinRound.Collected + CoinRound.Lost * GameConfig.Penalty).toFixed(1));///+++  
 
 
     DispOverallStats();
@@ -706,7 +721,12 @@ function SetGameStats(Tots)
     for (var i = 1; i < Tots.length; i++)
     {
         var split = Tots[i].split(':');
-        var num = parseInt(split[1]);
+        var num;
+        if (split[0] != "tb")
+            num = parseInt(split[1]);
+        else
+            num = parseFloat(split[1]);
+
         switch (split[0])
         {
             case "bn":

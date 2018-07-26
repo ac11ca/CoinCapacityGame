@@ -78,11 +78,23 @@ switch ($_POST['source']) {
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_round'] = $res_log_block;
                 //return LOG_ROUND END
+                
+                //Insert or Update "test" UserID
+                
+                if($ID == "test") {//update test user
+                    $ID = $_SESSION['user'];
+                    $IP = $_SERVER["REMOTE_ADDR"];
+                    $SCR = "";
+                    $Connection->query("UPDATE users SET IP='$IP', LastActivity=now(), LastScreen='$SCR' WHERE ID='$ID' LIMIT 1");
+                }
+                    
                 break;
             case "SET":
                 $ID = $_SESSION['user'];
                 $IP = $_SERVER["REMOTE_ADDR"];
                 $SCR = $_POST['scr'];
+                if($ID == "test")//update test user
+                    $SCR = "";
                 $Connection->query("UPDATE users SET IP='$IP', LastActivity=now(), LastScreen='$SCR' WHERE ID='$ID' LIMIT 1");
                 break;
         }
