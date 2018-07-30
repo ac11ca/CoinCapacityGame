@@ -1,12 +1,6 @@
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "ccg";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+require 'server_config.php';
 
 $target_dir = "upload/";
 
@@ -38,7 +32,7 @@ for ($i = 0; $i < count($filename_array); $i++) {
                 $getData[3] = "1970-01-01";
             if ($getData[5] == "0000-00-00 00:00:00")
                 $getData[5] = "1970-01-01";
-            $sql = "INSERT into users (ID,Name,IP,LastActivity,LastScreen,FirstActivity,showTCP,showTCC,showTCL,showCS,showCB,showRCP,showRCC,showRCNC) values ('" . $getData[0] . "','" . $getData[1] . "','" . $getData[2] . "','" . $getData[3] . "','" . $getData[4] . "','" . $getData[5] . "','" . $getData[6] . "','" . $getData[7] . "','" . $getData[8] . "','" . $getData[9] . "','" . $getData[10] . "','" . $getData[11] . "','" . $getData[12] . "','" . $getData[13] . "')";
+            $sql = "INSERT into users (ID,Name,IP,LastActivity,LastScreen,FirstActivity,showTCP,showTCC,showTCL,showCS,showCB,showRCP,showRCC,showRCNC,showRent) values ('" . $getData[0] . "','" . $getData[1] . "','" . $getData[2] . "','" . $getData[3] . "','" . $getData[4] . "','" . $getData[5] . "','" . $getData[6] . "','" . $getData[7] . "','" . $getData[8] . "','" . $getData[9] . "','" . $getData[10] . "','" . $getData[11] . "','" . $getData[12] . "','" . $getData[13] . "','" . $getData[14] . "')";
 
             $result = mysqli_query($conn, $sql);
 

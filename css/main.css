@@ -1,166 +1,176 @@
 body
 {
-	width:600px;
-	margin-left:auto;
-	margin-right:auto;
+    /*width has been enlarged*/
+    width:670px;
+    margin-left:auto;
+    margin-right:auto;
 }
 
 table.collectors td
 {
-	padding:2px 0;	
+    padding:2px 0;	
 }
 
 tr.selected td
 {
-	background-color: #ddd;
-	border-top: 2px solid #999;
-	border-bottom: 2px solid #999;
-	padding:5px 0;
-	margin:5px 0;
+    background-color: #ddd;
+    border-top: 2px solid #999;
+    border-bottom: 2px solid #999;
+    padding:5px 0;
+    margin:5px 0;
 }
 
 .dialog
 {
-	display:none; 
-	text-align:center; 
-	font-size:10pt;
+    display:none; 
+    text-align:center; 
+    font-size:10pt;
 }
 
 .tablecol
 {
-	text-align: center;
+    text-align: center;
 }
 
 .clearfix
 {
-	clear: both;
+    clear: both;
 }
 
 #this_round
 {
-	float: left;
-	clear: left;
+    float: left;
+    clear: left;
 }
 
 .stat
 {
-	font-size: 1.3em;
-	font-weight: bold;
-	margin-right: 5px;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-right: 5px;
 }
 
 #all_rounds
 {
-	float: right;
-	clear: right;	
+    float: right;
+    clear: right;	
 }
 
 .collectors
 {
-	border-collapse:collapse;
+    border-collapse:collapse;
 }
 
 #buttons
 {
-	width: 160px;
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
+    width: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
 #buttons button
 {
-	width: 130px;
-	margin: 5px 0px;	
+    width: 130px;
+    margin: 5px 0px;	
 }
 
 #header_text
 {
-	text-align:center;
-	text-decoration:underline;
-	color:navy;
+    text-align:center;
+    text-decoration:underline;
+    color:navy;
 }
 
 #select_collect
 {
-	clear:both;	
+    clear:both;	
 }
 
 #coins_coll
 {
-	padding-left:12px;
-	background-image:url('../images/slot.png');
-	background-size:96% 38px;
-	background-repeat:no-repeat;
-	background-position:left bottom;
+    padding-left:12px;
+    background-image:url('../images/slot.png');
+    background-size:96% 38px;
+    background-repeat:no-repeat;
+    background-position:left bottom;
+}
+
+#coins_lost.rented 
+{
+    padding-left:12px;
+    background-image:url('../images/slot.png');
+    background-size:96% 38px;
+    background-repeat:no-repeat;
+    background-position:left bottom;
 }
 
 #piggy
 {
-	margin-top:0px;
-	margin-bottom:0px;
-	height:98px;
-	width:120px;
-	background-image: url('../images/piggy.png');
-	background-size:cover;
-	background-repeat:no-repeat;
+    margin-top:0px;
+    margin-bottom:0px;
+    height:98px;
+    width:120px;
+    background-image: url('../images/piggy.png');
+    background-size:cover;
+    background-repeat:no-repeat;
 }
 
 #coin_drop
 {
-	margin-top:24px;
-	margin-bottom:24px;
-	margin-right:42px;
+    margin-top:24px;
+    margin-bottom:24px;
+    margin-right:42px;
 }
 
 #coins_move
 {
-	padding-left:22px;
-	height:40px;
-	width:100px;
-	background-image:url('../images/coin.png');
-	background-size: 40px 40px;
-	background-repeat:no-repeat;
-	position:fixed;
-	display:none;
-	border-collapse:collapse;
+    padding-left:22px;
+    height:40px;
+    width:100px;
+    background-image:url('../images/coin.png');
+    background-size: 40px 40px;
+    background-repeat:no-repeat;
+    position:fixed;
+    display:none;
+    border-collapse:collapse;
 }
 
 .ui-slider {
-	margin: 20px 0 25px 15px;
-	width:450px;
+    margin: 20px 0 25px 15px;
+    width:450px;
 }
 
 .ui-slider .ui-slider-handle
 {	text-decoration: none;
-   color:#000;
-	display: block; 
-	width: 35px; 
-	height: 30px;
-	font-size: .9em;
-	text-align: center;
-	padding: 5px;
-	margin-top: -5px;
+  color:#000;
+  display: block; 
+  width: 35px; 
+  height: 30px;
+  font-size: .9em;
+  text-align: center;
+  padding: 5px;
+  margin-top: -5px;
 }
 
 #completioncode
 {
-	font-weight: bold;
-	width:100px; 
-	margin:10px auto;
+    font-weight: bold;
+    width:100px; 
+    margin:10px auto;
 }
 
 #intro div
 {
-	float: left;
-	clear: left;
-	margin: 8px;
+    float: left;
+    clear: left;
+    margin: 8px;
 } 
 
 #intro img
 {
-	float: left;
-	margin-right: 10px;
+    float: left;
+    margin-right: 10px;
 }
 
 

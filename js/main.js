@@ -10,6 +10,18 @@ var CurrentBlock = new Block();
 //
 $(document).ready(function ()
 {
+    $('#btn-rent').click(function () {
+        //when rent button is clicked, bank should be decreased, the collected coins will be increased, and lost coin will be 0.
+        //after calculation, refreshed the display labels and 
+        CoinTots.Bank -= CurrentBlock.Rent;
+        CoinRound.Collected += CoinRound.Lost;
+        CoinRound.Lost = 0;
+        DispRoundStats();
+        DispOverallStats();
+        $("#btn-bank").html("Deposit " + CoinRound.Collected + " Coins");
+        $('#coins_lost').addClass("rented");
+    });
+
     $('#finish_button').click(function () {
         window.location.href = GameConfig.ExitURL;
     });
@@ -56,6 +68,10 @@ $(document).ready(function ()
         value: 0,
         slide: function (event, ui) {
             $("#pbs-1>a").html(ui.value);
+            // the continue button will be disabled only if both slider should be movement.
+            var val = $("#pbs-2").slider('option', 'value');
+            if (val > 0)
+                $('#btn-pbs').prop("disabled", false);
         }
     });
     $("#pbs-2").slider({
@@ -65,6 +81,10 @@ $(document).ready(function ()
         value: 0,
         slide: function (event, ui) {
             $("#pbs-2>a").html(ui.value);
+
+            var val = $("#pbs-1").slider('option', 'value');
+            if (val > 0)
+                $('#btn-pbs').prop("disabled", false);
         }
     });
     $("#pgs-1").slider({
@@ -74,6 +94,7 @@ $(document).ready(function ()
         value: 0,
         slide: function (event, ui) {
             $("#pgs-1>a").html(ui.value);
+            $('#btn-pgs').prop("disabled", false);
         }
     });
     $("#pgs-2").slider({
@@ -83,12 +104,15 @@ $(document).ready(function ()
         value: 0,
         slide: function (event, ui) {
             $("#pgs-2>a").html(ui.value);
+            $('#btn-pgs').prop("disabled", false);
         }
     });
 
 
 
     // user login details
+    //user login details has been converted from Sync GET method to Ajax Post.
+    // the function is as UserLogin();
     GameConfig.CurrentScreen = "LANDING";
     GameConfig.LoggedUser = '';
 
@@ -103,7 +127,6 @@ $(document).ready(function ()
                 id: $("#user").val(),
             },
             success: function (Data) {
-
                 Data = JSON.parse(Data);
                 if (Data.ID != undefined)
                 {
@@ -129,6 +152,8 @@ $(document).ready(function ()
                         $("#rcc").hide();
                     if (Data.showRCNC == false)
                         $("#rcnc").hide();
+                    if (Data.showRent == false)
+                        $("#btn-rent").hide();
                 }
                 if (GameConfig.LoggedUser.length == 0)
                 {
@@ -152,11 +177,12 @@ $(document).ready(function ()
                 GameConfig.Rounds = Data.Config.Rounds;
                 GameConfig.Sizes = Data.Config.Sizes.split(',');
                 GameConfig.Prices = Data.Config.Prices.split(',');
+                GameConfig.Rents = Data.Config.Rents.split(',');
                 GameConfig.AnimateCoinInterval = Data.Config.AnimateCoinInterval;
                 GameConfig.AnimateCoinSpeed = Data.Config.AnimateCoinSpeed;
                 GameConfig.AnimateCoinFade = Data.Config.AnimateCoinFade;
-                GameConfig.Penalty = Data.Config.Penalty;///+++
-                GameConfig.ExitURL = Data.Config.ExitURL;///+++
+                GameConfig.Penalty = Data.Config.Penalty;//added penalty
+                GameConfig.ExitURL = Data.Config.ExitURL;///added exiturl
 
                 if (Data.log_block)
                     CurrentBlock.Size = parseInt(Data.log_block.Size);
@@ -181,6 +207,7 @@ $(document).ready(function ()
                         break;
                     case "INTRO":
                         $("#intro").show();
+                        //GET method to Ajax
                         $.ajax({
                             url: "data.php",
                             type: "POST",
@@ -208,11 +235,13 @@ $(document).ready(function ()
                         break;
                     case "PBS":
                         SetGameStats(ScrArray);
+                        $('#btn-pbs').prop("disabled", true);
                         $("#postblocksurvey").show();
                         PBS();
                         break;
                     case "PGS":
                         SetGameStats(ScrArray);
+                        $('#btn-pgs').prop("disabled", true);
                         $("#postgamesurvey").show();
                         PGS();
                         break;
@@ -254,6 +283,8 @@ function PBS()
     {
         DumpActivity("PGS");
         $("#postblocksurvey").hide();
+
+        $('#btn-pgs').prop("disabled", true);
         $("#postgamesurvey").show();
     } else
     {
@@ -290,6 +321,13 @@ function DispRoundStats()
     $("#coins_lost_this").html(CoinRound.Lost);
 
     $("#this_round .stat").animate({opacity: 1});
+
+    //rent button will be enabled if lost coins are existed, and current coins in bank are larger than rent fee.
+    if (CoinRound.Lost > 0 && CoinTots.Bank > CurrentBlock.Rent) {        
+        $("#btn-rent").prop("disabled", false);
+    } else {
+        $("#btn-rent").prop("disabled", true);
+    }
 }
 
 //
@@ -336,7 +374,7 @@ function FillTable(TableName, HasButtons, Selected)
     $("#" + TableName + " tr").remove();
 
     // add in headings
-    var Heading = "<th align='right'></th><th>Size</th><th>Cost</th>";
+    var Heading = "<th align='right'></th><th>Size</th><th>Cost</th><th>Rent</th>";
     if (HasButtons)
         Heading += "<th>Buy</th>";
     $("#" + TableName).append("<tr>" + Heading + "</tr>");
@@ -346,15 +384,18 @@ function FillTable(TableName, HasButtons, Selected)
     {
         var Size = GameConfig.Sizes[i];
         var Price = GameConfig.Prices[i];
+        var Rent = GameConfig.Rents[i];
+
         var Width = CollectorPixels(Size);
 
         var c1 = "<td align='right'><img src='images/slot.png' height='25' width='" + Width + "'></td>";
         var c2 = "<td class='tablecol' style='padding-right: 40px;'>" + Size + "</b></td>";
         var c3 = "<td class='tablecol' style='padding-right: 20px;'>" + Price + " coins </td>";
-        var c4 = '';
+        var c4 = "<td class='tablecol' style='padding-right: 20px;'>" + Rent + " coins </td>";
+        var c5 = '';
         if (HasButtons)
-            c4 = "<td class='tablecol'><input type='radio' name='radio_buy' value='" + i + "'></td>";
-        $('#' + TableName).append("<tr id='" + TableName + "_row" + i + "'>" + c1 + c2 + c3 + c4 + "</tr>");
+            c5 = "<td class='tablecol'><input type='radio' name='radio_buy' value='" + i + "'></td>";
+        $('#' + TableName).append("<tr id='" + TableName + "_row" + i + "'>" + c1 + c2 + c3 + c4 + c5 + "</tr>");
     }
 
     //
@@ -436,6 +477,7 @@ function BuyCollector()
         CurrentBlock.Num++;
         CurrentBlock.Cost = parseInt(GameConfig.Prices[CollectorSelected]);
         CurrentBlock.Size = parseInt(GameConfig.Sizes[CollectorSelected]);
+        CurrentBlock.Rent = parseInt(GameConfig.Rents[CollectorSelected]);
 
         Log("BLOCK");
 
@@ -553,6 +595,7 @@ function BankCoins()
     // change screen attribs
     $("#btn-bank").html("Deposit Coins");
     $("#btn-bank").prop("disabled", true);
+    $("#btn-rent").prop("disabled", true);
 
 
     // update totals
@@ -605,6 +648,7 @@ function CoinMove(i)
 function NextRound()
 {
     $("#btn-next").prop("disabled", true);
+    $('#coins_lost').removeClass("rented");
 
     CoinTots.CurrentRound++;
 
@@ -613,6 +657,8 @@ function NextRound()
         DumpActivity("PBS");
         $("#round_start").hide();
         $("#coin_tots").hide();
+
+        $('#btn-pbs').prop("disabled", true);
         $("#postblocksurvey").show();
     } else
     {
@@ -697,6 +743,7 @@ function DumpActivity(Scr)
     ScrData += ",ts:" + CoinTots.Spent;
     ScrData += ",tb:" + CoinTots.Bank;
     ScrData += ",cs:" + (CurrentBlock.Size - 1);
+    //get sync to async post
     $.ajax({
         url: "data.php",
         type: "POST",

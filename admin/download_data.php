@@ -1,12 +1,7 @@
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "ccg";
+require 'server_config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 if (isset($_POST['download_data'])) {
 
     $db_tables = array('users', 'sequence', 'log_survey', 'log_round', 'log_block');

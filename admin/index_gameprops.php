@@ -74,14 +74,10 @@ include('server_gameprops.php');
             <!-- Icon Cards-->
 
             <?php
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "ccg";
+            require 'server_config.php';
 
 // Create connection
             $Blocks = $Rounds = $BankStart = -1;
-            $conn = new mysqli($servername, $username, $password, $dbname);
             $sqll = "SELECT Blocks, Rounds, BankStart, Sizes, Prices, Penalty from config LIMIT 1";
 //                if (mysqli_query($conn, $sqll)) {
 //                    echo "";
@@ -207,7 +203,7 @@ include('server_gameprops.php');
                                     <tr>
                                         <th>Size</th>
                                         <th>Cost</th>
-                                        <!--<th>Available</th>-->
+                                        <th>Rent</th>
                                         <th>Functions</th>
                                     </tr>
                                 </thead>
@@ -242,6 +238,12 @@ include('server_gameprops.php');
                                     <label for="collector_edit_cost" class="col-sm-2 col-form-label">Cost</label>
                                     <div class="col-sm-10">
                                         <input type="number" step="1" id="collector_edit_cost" name="collector_edit_cost" class="form-control" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="collector_edit_rent" class="col-sm-2 col-form-label">Rent</label>
+                                    <div class="col-sm-10">
+                                        <input type="number" step="1" id="collector_edit_rent" name="collector_edit_rent" class="form-control" value="">
                                     </div>
                                 </div>
                             </div>
@@ -335,8 +337,6 @@ include('server_gameprops.php');
                                             Penalty: $("#penalty").val(),
                                         },
                                         success: function (result) {
-                                            console.log(result);
-
                                             result = JSON.parse(result);
 
                                             if (result['status'] != "Success") {
@@ -366,7 +366,6 @@ include('server_gameprops.php');
                                             filenames: JSON.stringify(filenames),
                                         },
                                         success: function (result) {
-                                            console.log(result);
                                             result = JSON.parse(result);
                                             if (result['status'] != "success") {
                                                 alert(result['message']);
@@ -383,11 +382,9 @@ include('server_gameprops.php');
                                     });
                                 });
 
-                                var sizes;
-                                var prices;
+                                var sizes, prices, rents;
                                 var curr_sel_index;
                                 $(document).ready(function () {
-                                    console.log("ready!");
                                     $.ajax({
                                         type: "POST",
                                         url: "get_collectors.php",
@@ -395,14 +392,13 @@ include('server_gameprops.php');
                                             UserId: "",
                                         },
                                         success: function (result) {
-                                            console.log("get_collectors.php");
-                                            console.log(result);
                                             result = JSON.parse(result);
                                             sizes = result.Sizes.split(',');
                                             prices = result.Prices.split(',');
+                                            rents = result.Rents.split(',');
                                             var index = 0;
                                             for (index = 0; index < sizes.length; index++) {
-                                                var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
+                                                var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td>" + rents[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
                                                 $("#collector_table > tbody:last-child").append(row);
                                             }
 
@@ -425,15 +421,16 @@ include('server_gameprops.php');
 
                                 $(".btn-upload-collectors").click(function (e) {
                                     var i;
-                                    var size_string = "";
-                                    var price_string = "";
+                                    var size_string = price_string = rent_string = "";
                                     for (i = 0; i < sizes.length; i++) {
                                         if (i != 0) {
                                             size_string += ",";
                                             price_string += ",";
+                                            rent_string += ",";
                                         }
                                         size_string += (sizes[i]).toString();
                                         price_string += (prices[i]).toString();
+                                        rent_string += (rents[i]).toString();
                                     }
 
                                     $.ajax({
@@ -442,9 +439,9 @@ include('server_gameprops.php');
                                         data: {
                                             Sizes: size_string,
                                             Prices: price_string,
+                                            Rents: rent_string,
                                         },
                                         success: function (result) {
-                                            console.log(result);
 
                                             result = JSON.parse(result);
 
@@ -463,8 +460,7 @@ include('server_gameprops.php');
                                 $('#btn-create-collector').click(function (e) {
 
                                     if ($('#myModal').hasClass('show') == false) {
-                                        console.log("modal is closed now");
-
+                                        
                                         $('#myModal #collector_edit_size').val("");
                                         $('#myModal #collector_edit_cost').val("");
 
@@ -476,17 +472,15 @@ include('server_gameprops.php');
                                         curr_sel_index = -1;
 
                                     } else {
-                                        console.log("modal is open now");
                                     }
                                 });
 
                                 function collector_edit(index) {
-//                                    console.log("collector_edit" + index);
                                     if ($('#myModal').hasClass('show') == false) {
-                                        console.log("modal is closed now");
 
                                         $('#myModal #collector_edit_size').val(sizes[index]);
                                         $('#myModal #collector_edit_cost').val(prices[index]);
+                                        $('#myModal #collector_edit_rent').val(rents[index]);
 
                                         $('#myModal').modal({
                                             backdrop: 'static',
@@ -496,40 +490,33 @@ include('server_gameprops.php');
                                         curr_sel_index = index;
 
                                     } else {
-                                        console.log("modal is open now");
                                     }
-//                            $('#myModal').dialog({
-//                                close: function (event, ui) {
-//                                    console.log("asdfasdf");                                    
-//                                }
-//                            });
                                 }
 
 
                                 function saveTextBoxes() {
-                                    console.log("size = " + $('#collector_edit_size').val());
-                                    console.log("price = " + $('#collector_edit_cost').val());
                                     if (curr_sel_index < 0) //add a new 
                                     {   
                                         sizes.push($('#collector_edit_size').val());
                                         prices.push($('#collector_edit_cost').val());
+                                        rents.push($('#collector_edit_rent').val());
+                                        
                                     } else {//edit a exiting one
                                         sizes[curr_sel_index] = $('#collector_edit_size').val();
                                         prices[curr_sel_index] = $('#collector_edit_cost').val();
+                                        rents[curr_sel_index] = $('#collector_edit_rent').val();
                                     }
 
 
                                     $("#collector_table tbody").empty();
                                     var index = 0;
                                     for (index = 0; index < sizes.length; index++) {
-                                        var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
+                                        var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td>" + rents[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
                                         $("#collector_table > tbody:last-child").append(row);
                                     }
                                 }
 
                                 function collector_remove(index) {
-
-                                    console.log("collector_remove" + index);
                                     sizes.splice(index, 1);
                                     prices.splice(index, 1);
 
@@ -537,7 +524,7 @@ include('server_gameprops.php');
 
                                     var index = 0;
                                     for (index = 0; index < sizes.length; index++) {
-                                        var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
+                                        var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td>" + rents[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
                                         $("#collector_table > tbody:last-child").append(row);
                                     }
                                 }

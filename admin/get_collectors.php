@@ -2,16 +2,11 @@
 
 session_start();
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "ccg";
+require 'server_config.php';
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 $return_array = array();
 
-$sqll = "SELECT Sizes, Prices from config LIMIT 1";
+$sqll = "SELECT Sizes, Prices, Rents from config LIMIT 1";
 
 $result = mysqli_query($conn, $sqll);
 

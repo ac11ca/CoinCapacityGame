@@ -16,12 +16,11 @@ session_start();
 //date_default_timezone_set("Europe/Dublin");
 //$Connection = new mysqli("localhost", "root", "", "ccg");
 // live environment
-//date_default_timezone_set("America/Raleigh");
-//$Connection = new mysqli("localhost", "ccg", "QrMKBUPLX4wVqY8z", "ccg");
-$Connection = new mysqli("localhost", "root", "", "ccg");
+date_default_timezone_set("Australia/Sydney");
+$Connection = new mysqli("localhost", "root", "", "ccg");//root/QrMKBUPLX4wVqY8z
 
 $Return = array();
-switch ($_POST['source']) {
+switch ($_POST['source']) {//changed from $_GET to $_POST
     case "CONFIG":
         $Qres = $Connection->query("SELECT * from config LIMIT 1");
         $Return = $Qres->fetch_assoc();
@@ -50,7 +49,7 @@ switch ($_POST['source']) {
                         $Connection->query("UPDATE users SET FirstActivity=now() WHERE ID='$ID' LIMIT 1");
                 }
 
-                //RETURN CONFIG START
+                //returned config informations when user information are fetched
                 
                 $Qres = $Connection->query("SELECT * from config LIMIT 1");
                 $res_config = $Qres->fetch_assoc();
@@ -66,21 +65,21 @@ switch ($_POST['source']) {
                     }
                 }
                 $Return['Config'] = $res_config;                
-                //RETURN CONFIG END
+                //return config END
                 
-                //return LOG_BLOCK START
+                //log_block, log round are fetched also
                 $Qres = $Connection->query("SELECT * FROM log_block WHERE UserID='$User' ORDER BY Submitted DESC LIMIT 1");
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_block'] = $res_log_block;
                 //return LOG_BLOCK END
+                
                 //return LOG_ROUND START
                 $Qres = $Connection->query("SELECT * FROM log_round WHERE UserID='$User' ORDER BY Submitted DESC LIMIT 1");
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_round'] = $res_log_block;
                 //return LOG_ROUND END
                 
-                //Insert or Update "test" UserID
-                
+                //Insert or Update "test" UserID                
                 if($ID == "test") {//update test user
                     $ID = $_SESSION['user'];
                     $IP = $_SERVER["REMOTE_ADDR"];
@@ -93,7 +92,7 @@ switch ($_POST['source']) {
                 $ID = $_SESSION['user'];
                 $IP = $_SERVER["REMOTE_ADDR"];
                 $SCR = $_POST['scr'];
-                if($ID == "test")//update test user
+                if($ID == "test")//if it's "test" user, previous saving should be clear when the user refreshes the web page.
                     $SCR = "";
                 $Connection->query("UPDATE users SET IP='$IP', LastActivity=now(), LastScreen='$SCR' WHERE ID='$ID' LIMIT 1");
                 break;

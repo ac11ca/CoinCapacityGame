@@ -71,13 +71,7 @@ include('server_url.php');
                 <!-- Icon Cards-->
 
                 <?php
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $dbname = "ccg";
-
-// Create connection
-                $conn = new mysqli($servername, $username, $password, $dbname);
+                require 'server_config.php';
                 ?>
 
 
@@ -187,8 +181,6 @@ include('server_url.php');
                             type: "wipe",
                         },
                         success: function (result) {
-                            console.log(result);
-
                             result = JSON.parse(result);
 
                             if (result['status'] != "Success") {
