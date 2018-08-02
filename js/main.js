@@ -4,6 +4,8 @@ var CoinTots = new Coins();
 var CoinRound = new Coins();
 var CurrentBlock = new Block();
 
+var current_rent_fee = 0;
+var showRent = true;
 
 //
 // PROJECT START - called on form load
@@ -13,9 +15,10 @@ $(document).ready(function ()
     $('#btn-rent').click(function () {
         //when rent button is clicked, bank should be decreased, the collected coins will be increased, and lost coin will be 0.
         //after calculation, refreshed the display labels and 
-        CoinTots.Bank -= CurrentBlock.Rent;
+        CoinTots.Bank -= current_rent_fee;
         CoinRound.Collected += CoinRound.Lost;
         CoinRound.Lost = 0;
+        CoinRound.Rent = current_rent_fee;//save current rent coins
         DispRoundStats();
         DispOverallStats();
         $("#btn-bank").html("Deposit " + CoinRound.Collected + " Coins");
@@ -23,7 +26,15 @@ $(document).ready(function ()
     });
 
     $('#finish_button').click(function () {
-        window.location.href = GameConfig.ExitURL;
+        if (GameConfig.ExitURL.indexOf("utsbusiness.az1.qualtrics.com") > -1) {
+            //http://utsbusiness.az1.qualtrics.com/jfe/form/SV_0cWIP2z6Abz16bH/?userID=test1            
+            var userID_array = window.location.href.split("userID=");
+            var userID = userID_array[1];
+            window.location.href = GameConfig.ExitURL + "/?userID=" + userID;
+        } else {
+            window.location.href = GameConfig.ExitURL;
+        }
+
     });
 
     // slow client/server processing means forced sync processing on all ajax calls.
@@ -152,8 +163,11 @@ $(document).ready(function ()
                         $("#rcc").hide();
                     if (Data.showRCNC == false)
                         $("#rcnc").hide();
-                    if (Data.showRent == false)
+                    if (Data.showRent == false) {
                         $("#btn-rent").hide();
+                        $(".intro_show_rent").hide();
+                        showRent = false;
+                    }
                 }
                 if (GameConfig.LoggedUser.length == 0)
                 {
@@ -184,8 +198,12 @@ $(document).ready(function ()
                 GameConfig.Penalty = Data.Config.Penalty;//added penalty
                 GameConfig.ExitURL = Data.Config.ExitURL;///added exiturl
 
-                if (Data.log_block)
+                if (Data.log_block) {
                     CurrentBlock.Size = parseInt(Data.log_block.Size);
+                    CurrentBlock.Rent = parseInt(Data.log_block.Rent);
+                    
+                    $("#btn-rent").text("Rent Capacity for " + CurrentBlock.Rent + " Coins");
+                }
 
                 // update screen intro info
                 $(".rounds").each(function () {
@@ -231,6 +249,9 @@ $(document).ready(function ()
                         $("#this_round").show();
                         $("#round_start").show();
                         $("#coin_drop").show();
+                        $("#btn-buy").prop("disabled", true);
+                        $("#btn-next").prop("disabled", true);
+
                         CoinsAppear();
                         break;
                     case "PBS":
@@ -323,10 +344,31 @@ function DispRoundStats()
     $("#this_round .stat").animate({opacity: 1});
 
     //rent button will be enabled if lost coins are existed, and current coins in bank are larger than rent fee.
-    if (CoinRound.Lost > 0 && CoinTots.Bank > CurrentBlock.Rent) {        
-        $("#btn-rent").prop("disabled", false);
+
+    if (CoinRound.Lost > 0 && CoinTots.Bank > CurrentBlock.Rent) {
+        
+        var size_index_of_lost = GameConfig.Sizes.indexOf(CoinRound.Lost.toString());
+        
+        current_rent_fee = GameConfig.Rents[size_index_of_lost];
+
+        // get smallest rent fee        
+        if (size_index_of_lost < 0 && GameConfig.Rents.length > 0) {
+            var smallest_rent_fee = Number(GameConfig.Rents[0]);
+            var i;
+            for (i = 0; i < GameConfig.Rents.length; i++) {
+                if (Number(GameConfig.Rents[i]) < smallest_rent_fee) {
+                    smallest_rent_fee = Number(GameConfig.Rents[i]);
+                }
+            }
+            
+            current_rent_fee = smallest_rent_fee;
+        }
+
+        $("#btn-rent").text("Rent Capacity for " + current_rent_fee + " Coins");
+        if (showRent)
+            $("#btn-rent").show();
     } else {
-        $("#btn-rent").prop("disabled", true);
+        $("#btn-rent").hide();
     }
 }
 
@@ -374,7 +416,10 @@ function FillTable(TableName, HasButtons, Selected)
     $("#" + TableName + " tr").remove();
 
     // add in headings
-    var Heading = "<th align='right'></th><th>Size</th><th>Cost</th><th>Rent</th>";
+    var Heading = "<th align='right'></th><th>Size</th><th>Cost</th>";
+    if (showRent) {
+        Heading += "<th>Rent</th>";
+    }
     if (HasButtons)
         Heading += "<th>Buy</th>";
     $("#" + TableName).append("<tr>" + Heading + "</tr>");
@@ -391,7 +436,9 @@ function FillTable(TableName, HasButtons, Selected)
         var c1 = "<td align='right'><img src='images/slot.png' height='25' width='" + Width + "'></td>";
         var c2 = "<td class='tablecol' style='padding-right: 40px;'>" + Size + "</b></td>";
         var c3 = "<td class='tablecol' style='padding-right: 20px;'>" + Price + " coins </td>";
-        var c4 = "<td class='tablecol' style='padding-right: 20px;'>" + Rent + " coins </td>";
+        var c4 = "";
+        if (showRent)
+            c4 = "<td class='tablecol' style='padding-right: 20px;'>" + Rent + " coins </td>";
         var c5 = '';
         if (HasButtons)
             c5 = "<td class='tablecol'><input type='radio' name='radio_buy' value='" + i + "'></td>";
@@ -535,13 +582,12 @@ function CoinsAppear()
             CoinDrops.Possible = Data.Coins;
             CoinRound.Possible = CoinDrops.Possible;
 
-
-
             CoinRound.Spent = CurrentBlock.Cost;
             CoinRound.Collected = Math.min(CurrentBlock.Size, CoinDrops.Possible);
             CoinRound.Lost = Math.max(0, CoinRound.Possible - CoinRound.Collected);
 
-            Log("ROUND");
+
+//            Log("ROUND");
 
             // collected coins display
             $("#coin_drop").show();
@@ -595,7 +641,7 @@ function BankCoins()
     // change screen attribs
     $("#btn-bank").html("Deposit Coins");
     $("#btn-bank").prop("disabled", true);
-    $("#btn-rent").prop("disabled", true);
+    $("#btn-rent").hide();
 
 
     // update totals
@@ -650,9 +696,12 @@ function NextRound()
     $("#btn-next").prop("disabled", true);
     $('#coins_lost').removeClass("rented");
 
-    CoinTots.CurrentRound++;
 
-    if (CoinTots.CurrentRound % GameConfig.Rounds == 1)
+// In the original logic, log has been occured when round is started, but it needs to work when round is completed
+    Log("ROUND");///+++
+
+
+    if (CoinTots.CurrentRound % GameConfig.Rounds == 0)
     {
         DumpActivity("PBS");
         $("#round_start").hide();
@@ -660,12 +709,14 @@ function NextRound()
 
         $('#btn-pbs').prop("disabled", true);
         $("#postblocksurvey").show();
-    } else
-    {
+        CoinTots.CurrentRound++;
+    } else {
+        CoinTots.CurrentRound++;
         $("#coin_drop").show();
         CoinsAppear();
         DispRoundStats();
     }
+
 }
 
 //
@@ -673,7 +724,7 @@ function NextRound()
 //
 function Log(Action)
 {
-    var p1, p2, p3, p4, p5;
+    var p1, p2, p3, p4, p5, p6;
 
     switch (Action)
     {
@@ -683,6 +734,7 @@ function Log(Action)
             p3 = -1;
             p4 = -1;
             p5 = -1;
+            p6 = CurrentBlock.Rent;//save current rent
             break;
         case "ROUND":
             p1 = CurrentBlock.Num;
@@ -690,6 +742,7 @@ function Log(Action)
             p3 = CoinRound.Possible;
             p4 = CoinRound.Collected;
             p5 = -1;
+            p6 = CoinRound.Rent;//save current rent coins
             break;
         case "PBS":
             p1 = "slider-pbs1";
@@ -709,6 +762,17 @@ function Log(Action)
             break;
     }
 
+    var mydata = {
+        source: "LOG",
+        action: Action,
+        p1: p1,
+        p2: p2,
+        p3: p3,
+        p4: p4,
+        p5: p5,
+        p6: p6, //current rent
+    };
+
     $.ajax({
         url: "data.php",
         type: "POST",
@@ -721,9 +785,10 @@ function Log(Action)
             p3: p3,
             p4: p4,
             p5: p5,
+            p6: p6, //current rent
         },
         success: function (Data) {
-
+            CoinRound.Rent = 0;
         }
     });
 }

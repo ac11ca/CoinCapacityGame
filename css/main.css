@@ -105,6 +105,10 @@ tr.selected td
     background-position:left bottom;
 }
 
+#coins_lost {
+    text-align: right;
+}
+
 #piggy
 {
     margin-top:0px;

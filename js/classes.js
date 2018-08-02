@@ -28,6 +28,7 @@ function Coins()
 	this.Lost=0;
 	this.Spent=0;
 	this.Bank;
+        this.Rent = 0;
 }
 
 
@@ -39,6 +40,7 @@ function Block()
 	this.Num;
 	this.Size;
 	this.Cost;
+        this.Rent;
 }
 
 

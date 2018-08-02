@@ -106,12 +106,13 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
         $P3 = $_POST['p3'];
         $P4 = $_POST['p4'];
         $P5 = $_POST['p5'];
+        $P6 = $_POST['p6'];//rent
         switch ($_POST['action']) {
             case "BLOCK":
-                $Connection->query("INSERT INTO log_block(UserID,Block,Size,Submitted) VALUES('$User',$P1,$P2,now())");
+                $Connection->query("INSERT INTO log_block(UserID,Block,Size,Rent,Submitted) VALUES('$User',$P1,$P2,$P6,now())");
                 break;
             case "ROUND":
-                $Connection->query("INSERT INTO log_round(UserID,Block,Round,CoinsAvail,CoinsColl,Submitted) VALUES('$User',$P1,$P2,$P3,$P4,now())");
+                $Connection->query("INSERT INTO log_round(UserID,Block,Round,CoinsAvail,CoinsColl,CoinsRent,Submitted) VALUES('$User',$P1,$P2,$P3,$P4,$P6,now())");
                 break;
             case "SURVEY":
                 $Connection->query("INSERT INTO log_survey(UserID,Block,Question,Answer,Submitted) VALUES('$User',$P5,'$P1',$P2,now())");
