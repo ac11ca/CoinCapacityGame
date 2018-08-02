@@ -19,7 +19,7 @@
 </head>
 
 <body class="bg-dark">
-  <div class="container">
+  <div class="container" style="display: none;">
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">Register an Account</div>
       <div class="card-body">
