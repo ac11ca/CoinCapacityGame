@@ -71,6 +71,7 @@ include('server_url.php');
                 <!-- Icon Cards-->
 
                 <?php
+
                 require 'server_config.php';
                 ?>
 
@@ -181,6 +182,7 @@ include('server_url.php');
                             type: "wipe",
                         },
                         success: function (result) {
+
                             result = JSON.parse(result);
 
                             if (result['status'] != "Success") {

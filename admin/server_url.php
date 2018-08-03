@@ -2,6 +2,7 @@
 
 session_start();
 
+
 require 'server_config.php';
 
 $error_msg = "";

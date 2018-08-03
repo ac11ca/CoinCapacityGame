@@ -71,8 +71,9 @@ include('server_url.php');
                 <!-- Icon Cards-->
 
                 <?php
+
                 require 'server_config.php';
-                
+
                 $sqll = "SELECT ExitURL from config LIMIT 1";
                 if (mysqli_query($conn, $sqll)) {
                     echo "";

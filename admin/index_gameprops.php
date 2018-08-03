@@ -74,6 +74,7 @@ include('server_gameprops.php');
             <!-- Icon Cards-->
 
             <?php
+
             require 'server_config.php';
 
 // Create connection
@@ -240,12 +241,14 @@ include('server_gameprops.php');
                                         <input type="number" step="1" id="collector_edit_cost" name="collector_edit_cost" class="form-control" value="">
                                     </div>
                                 </div>
+
                                 <div class="form-group row">
                                     <label for="collector_edit_rent" class="col-sm-2 col-form-label">Rent</label>
                                     <div class="col-sm-10">
                                         <input type="number" step="1" id="collector_edit_rent" name="collector_edit_rent" class="form-control" value="">
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -337,6 +340,7 @@ include('server_gameprops.php');
                                             Penalty: $("#penalty").val(),
                                         },
                                         success: function (result) {
+
                                             result = JSON.parse(result);
 
                                             if (result['status'] != "Success") {
@@ -366,6 +370,7 @@ include('server_gameprops.php');
                                             filenames: JSON.stringify(filenames),
                                         },
                                         success: function (result) {
+
                                             result = JSON.parse(result);
                                             if (result['status'] != "success") {
                                                 alert(result['message']);
@@ -382,9 +387,11 @@ include('server_gameprops.php');
                                     });
                                 });
 
+
                                 var sizes, prices, rents;
                                 var curr_sel_index;
                                 $(document).ready(function () {
+
                                     $.ajax({
                                         type: "POST",
                                         url: "get_collectors.php",
@@ -392,6 +399,7 @@ include('server_gameprops.php');
                                             UserId: "",
                                         },
                                         success: function (result) {
+
                                             result = JSON.parse(result);
                                             sizes = result.Sizes.split(',');
                                             prices = result.Prices.split(',');
@@ -421,7 +429,9 @@ include('server_gameprops.php');
 
                                 $(".btn-upload-collectors").click(function (e) {
                                     var i;
+
                                     var size_string = price_string = rent_string = "";
+
                                     for (i = 0; i < sizes.length; i++) {
                                         if (i != 0) {
                                             size_string += ",";
@@ -460,7 +470,7 @@ include('server_gameprops.php');
                                 $('#btn-create-collector').click(function (e) {
 
                                     if ($('#myModal').hasClass('show') == false) {
-                                        
+
                                         $('#myModal #collector_edit_size').val("");
                                         $('#myModal #collector_edit_cost').val("");
 
@@ -472,15 +482,18 @@ include('server_gameprops.php');
                                         curr_sel_index = -1;
 
                                     } else {
+
                                     }
                                 });
 
                                 function collector_edit(index) {
+
                                     if ($('#myModal').hasClass('show') == false) {
 
                                         $('#myModal #collector_edit_size').val(sizes[index]);
                                         $('#myModal #collector_edit_cost').val(prices[index]);
                                         $('#myModal #collector_edit_rent').val(rents[index]);
+
 
                                         $('#myModal').modal({
                                             backdrop: 'static',
@@ -490,11 +503,13 @@ include('server_gameprops.php');
                                         curr_sel_index = index;
 
                                     } else {
+
                                     }
                                 }
 
 
                                 function saveTextBoxes() {
+
                                     if (curr_sel_index < 0) //add a new 
                                     {   
                                         sizes.push($('#collector_edit_size').val());
@@ -524,6 +539,7 @@ include('server_gameprops.php');
 
                                     var index = 0;
                                     for (index = 0; index < sizes.length; index++) {
+
                                         var row = "<tr><td>" + sizes[index] + "</td><td>" + prices[index] + "</td><td>" + rents[index] + "</td><td><button class='fa fa-edit' onclick='collector_edit(" + index + ")'></button><button class='fa fa-remove' onclick='collector_remove(" + index + ")'></button></td>";
                                         $("#collector_table > tbody:last-child").append(row);
                                     }

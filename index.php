@@ -40,6 +40,7 @@
         <div id="landing">
             <p>To play the coin collecting game, you'll need a participation code.  You should have received a link which included the code which would have looked like this:</p>
             <p>http://ccg.samswift.org/?userID=glIqFtKsIN</p>
+
             <p>You are currently visiting the game without a participation code or with one that we do not recognize.  Please e-mail adrian.camilleri@uts.edu.au if you think there is a problem.</p> 
             <input type="hidden" id="user" class="user" value="<?php
             if (isset($_GET['userID'])) {
@@ -48,7 +49,6 @@
             ?>">	
             <!--<button id='btn-login'>Login</button> -->
         </div>
-
 
         <!-- game intro page -->
         <div id="intro">
@@ -62,6 +62,7 @@
                 <p>Collectors that have the capacity to collect more coins are more expensive to purchase. You will buy collectors using coins from your bank balance.</p>
                 <p>After every <span class='rounds'></span> rounds of play your collector tool will wear out and you will be required to purchase a new collector.</p>
             </div>
+
             <div class="intro_show_rent">
                 <button type="button" style="pointer-events: none; font-size: 1rem; ">Rent Capacity for 4 Coins</button>
                 <div>
@@ -71,6 +72,7 @@
 
             <div>Each coin that you collect will add 1 coin to your balance. Each coin that you do not collect will not change your balance.</div>
             <div>At the end of the game the number of coins that you have collected will be converted into real money at the rate of 1 coin = 1 cent, which you will receive as a bonus payment.</div>
+
             <br class="clearfix">
             <br>		
             <p>Good Luck!</p>
@@ -134,11 +136,13 @@
                     <td id="coins_move"></td>
                 </tr>
                 <tr>
+
                     <td class="text-right">
                         <button type="button" id="btn-rent">Rent Capacity
                     </td>
                     <td></td>
                     <td id='piggy'></td>
+
                 </tr>
                 <tr>
                     <td></td><td></td><td></td>
@@ -182,7 +186,7 @@
         <!-- credits -->
         <div id="credits">
             <p>Thank you for participating in the study.</p>
-        </p>
+
         <form class="text-center">
             <input type="button" id ="finish_button" value="Continue"/>
         </form>

@@ -16,6 +16,7 @@ session_start();
 //date_default_timezone_set("Europe/Dublin");
 //$Connection = new mysqli("localhost", "root", "", "ccg");
 // live environment
+
 date_default_timezone_set("Australia/Sydney");
 $Connection = new mysqli("localhost", "root", "", "ccg");//root/QrMKBUPLX4wVqY8z
 
@@ -49,6 +50,7 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
                         $Connection->query("UPDATE users SET FirstActivity=now() WHERE ID='$ID' LIMIT 1");
                 }
 
+
                 //returned config informations when user information are fetched
                 
                 $Qres = $Connection->query("SELECT * from config LIMIT 1");
@@ -65,6 +67,7 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
                     }
                 }
                 $Return['Config'] = $res_config;                
+
                 //return config END
                 
                 //log_block, log round are fetched also
@@ -72,14 +75,16 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_block'] = $res_log_block;
                 //return LOG_BLOCK END
-                
+
                 //return LOG_ROUND START
                 $Qres = $Connection->query("SELECT * FROM log_round WHERE UserID='$User' ORDER BY Submitted DESC LIMIT 1");
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_round'] = $res_log_block;
                 //return LOG_ROUND END
                 
+
                 //Insert or Update "test" UserID                
+
                 if($ID == "test") {//update test user
                     $ID = $_SESSION['user'];
                     $IP = $_SERVER["REMOTE_ADDR"];
@@ -92,7 +97,9 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
                 $ID = $_SESSION['user'];
                 $IP = $_SERVER["REMOTE_ADDR"];
                 $SCR = $_POST['scr'];
+            
                 if($ID == "test")//if it's "test" user, previous saving should be clear when the user refreshes the web page.
+
                     $SCR = "";
                 $Connection->query("UPDATE users SET IP='$IP', LastActivity=now(), LastScreen='$SCR' WHERE ID='$ID' LIMIT 1");
                 break;
@@ -113,6 +120,7 @@ switch ($_POST['source']) {//changed from $_GET to $_POST
                 break;
             case "ROUND":
                 $Connection->query("INSERT INTO log_round(UserID,Block,Round,CoinsAvail,CoinsColl,CoinsRent,Submitted) VALUES('$User',$P1,$P2,$P3,$P4,$P6,now())");
+
                 break;
             case "SURVEY":
                 $Connection->query("INSERT INTO log_survey(UserID,Block,Question,Answer,Submitted) VALUES('$User',$P5,'$P1',$P2,now())");

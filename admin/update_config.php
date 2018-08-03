@@ -1,9 +1,9 @@
 <?php
 
+
 require 'server_config.php';
 
 session_start();
-
 $return_array = array();
 $Blocks = 0;
 $Rounds = 0;
