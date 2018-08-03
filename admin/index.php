@@ -71,13 +71,9 @@ include('server_url.php');
                 <!-- Icon Cards-->
 
                 <?php
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $dbname = "ccg";
 
-// Create connection
-                $conn = new mysqli($servername, $username, $password, $dbname);
+                require 'server_config.php';
+
                 $sqll = "SELECT ExitURL from config LIMIT 1";
                 if (mysqli_query($conn, $sqll)) {
                     echo "";

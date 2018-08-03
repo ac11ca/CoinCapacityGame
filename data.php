@@ -16,12 +16,12 @@ session_start();
 //date_default_timezone_set("Europe/Dublin");
 //$Connection = new mysqli("localhost", "root", "", "ccg");
 // live environment
-//date_default_timezone_set("America/Raleigh");
-//$Connection = new mysqli("localhost", "ccg", "QrMKBUPLX4wVqY8z", "ccg");
-$Connection = new mysqli("localhost", "root", "", "ccg");
+
+date_default_timezone_set("Australia/Sydney");
+$Connection = new mysqli("localhost", "root", "", "ccg");//root/QrMKBUPLX4wVqY8z
 
 $Return = array();
-switch ($_POST['source']) {
+switch ($_POST['source']) {//changed from $_GET to $_POST
     case "CONFIG":
         $Qres = $Connection->query("SELECT * from config LIMIT 1");
         $Return = $Qres->fetch_assoc();
@@ -50,7 +50,8 @@ switch ($_POST['source']) {
                         $Connection->query("UPDATE users SET FirstActivity=now() WHERE ID='$ID' LIMIT 1");
                 }
 
-                //RETURN CONFIG START
+
+                //returned config informations when user information are fetched
                 
                 $Qres = $Connection->query("SELECT * from config LIMIT 1");
                 $res_config = $Qres->fetch_assoc();
@@ -66,21 +67,24 @@ switch ($_POST['source']) {
                     }
                 }
                 $Return['Config'] = $res_config;                
-                //RETURN CONFIG END
+
+                //return config END
                 
-                //return LOG_BLOCK START
+                //log_block, log round are fetched also
                 $Qres = $Connection->query("SELECT * FROM log_block WHERE UserID='$User' ORDER BY Submitted DESC LIMIT 1");
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_block'] = $res_log_block;
                 //return LOG_BLOCK END
+
                 //return LOG_ROUND START
                 $Qres = $Connection->query("SELECT * FROM log_round WHERE UserID='$User' ORDER BY Submitted DESC LIMIT 1");
                 $res_log_block = $Qres->fetch_assoc();
                 $Return['log_round'] = $res_log_block;
                 //return LOG_ROUND END
                 
-                //Insert or Update "test" UserID
-                
+
+                //Insert or Update "test" UserID                
+
                 if($ID == "test") {//update test user
                     $ID = $_SESSION['user'];
                     $IP = $_SERVER["REMOTE_ADDR"];
@@ -93,7 +97,9 @@ switch ($_POST['source']) {
                 $ID = $_SESSION['user'];
                 $IP = $_SERVER["REMOTE_ADDR"];
                 $SCR = $_POST['scr'];
-                if($ID == "test")//update test user
+            
+                if($ID == "test")//if it's "test" user, previous saving should be clear when the user refreshes the web page.
+
                     $SCR = "";
                 $Connection->query("UPDATE users SET IP='$IP', LastActivity=now(), LastScreen='$SCR' WHERE ID='$ID' LIMIT 1");
                 break;
@@ -107,12 +113,14 @@ switch ($_POST['source']) {
         $P3 = $_POST['p3'];
         $P4 = $_POST['p4'];
         $P5 = $_POST['p5'];
+        $P6 = $_POST['p6'];//rent
         switch ($_POST['action']) {
             case "BLOCK":
-                $Connection->query("INSERT INTO log_block(UserID,Block,Size,Submitted) VALUES('$User',$P1,$P2,now())");
+                $Connection->query("INSERT INTO log_block(UserID,Block,Size,Rent,Submitted) VALUES('$User',$P1,$P2,$P6,now())");
                 break;
             case "ROUND":
-                $Connection->query("INSERT INTO log_round(UserID,Block,Round,CoinsAvail,CoinsColl,Submitted) VALUES('$User',$P1,$P2,$P3,$P4,now())");
+                $Connection->query("INSERT INTO log_round(UserID,Block,Round,CoinsAvail,CoinsColl,CoinsRent,Submitted) VALUES('$User',$P1,$P2,$P3,$P4,$P6,now())");
+
                 break;
             case "SURVEY":
                 $Connection->query("INSERT INTO log_survey(UserID,Block,Question,Answer,Submitted) VALUES('$User',$P5,'$P1',$P2,now())");

@@ -40,7 +40,8 @@
         <div id="landing">
             <p>To play the coin collecting game, you'll need a participation code.  You should have received a link which included the code which would have looked like this:</p>
             <p>http://ccg.samswift.org/?userID=glIqFtKsIN</p>
-            <p>You are currently visiting the game without a participation code or with one that we do not recognize.  Please e-mail the experimenter, Sam Swift (samswift@berkeley.edu) if you think there is a problem.</p> 
+
+            <p>You are currently visiting the game without a participation code or with one that we do not recognize.  Please e-mail adrian.camilleri@uts.edu.au if you think there is a problem.</p> 
             <input type="hidden" id="user" class="user" value="<?php
             if (isset($_GET['userID'])) {
                 echo($_GET['userID']);
@@ -48,44 +49,6 @@
             ?>">	
             <!--<button id='btn-login'>Login</button> -->
         </div>
-
-        <!-- informed consent -->	
-        <!--        <div id="consent" style="display: none !important;">
-                    <p>Welcome! Please take the time to review the information below before proceeding. </p>
-                    <p>
-                    <h4>Purpose of the study</h4>
-                    You are being invited to participate in a research project by investigators from Duke University. The purpose of this study is to investigate how people make choices.  
-                </p> 
-                <p>
-                <h4>Non-participation statement and compensation </h4>
-                You must be 18 years or older to participate.  Your participation is voluntary and you may withdraw from the study at any time simply by closing the browser window.  You may refuse to answer any questions, however, there are some questions that you must answer in order to continue completing the study.  Only by completing this study and submitting your completion code will you receive compensation as stated on the Mechanical Turk HIT.  To trigger payment, you must copy the code you receive at the end of the task back into the Mechanical Turk HIT.  All of your responses will be completely de-identified, so you may answer freely and openly.
-            </p>
-            <p>
-            <h4>Procedures</h4>
-            In this task, you will play a game where you goal is to collect coins by making various decisions. This task is expected to take approximately 8 minutes to complete.
-        </p>
-        <p>
-        <h4>Confidentiality</h4>
-        No personally identifying information will be collected with the study data, so your anonymity is ensured.
-        </p> 
-        <p>
-        <h4>Publication statement</h4>
-        The results of this study may be published in professional and/or scientific journals. It may also be used for educational purposes or for professional presentations. When results are reported no individual respondent will be identified.
-        </p>
-        <p>
-        <h4>Risks and benefits</h4>
-        There are no risks involved in the completion of this study. While you will not directly benefit from participation beyond the stated compensation, your participation may help investigators better understand how people make decisions.
-        </p>
-        <p>
-        <h4>Contacts</h4>
-        If you have any questions about this study, then please contact Dr. Adrian Camilleri (adrian.camilleri@duke.edu) or Rick Larrick (rick.larrick@duke.edu).  If you have questions about your rights as a research subject, please contact the staff or Chair of Human Protections Administration at Duke University at 919-684-3030.
-        </p>
-        <p>
-            If you agree to participate, then please click the “Agree” button. If not, then please navigate away from this web page.
-        </p>
-        <button id='btn-agree'>Agree</button>
-        </div>-->
-
 
         <!-- game intro page -->
         <div id="intro">
@@ -99,8 +62,17 @@
                 <p>Collectors that have the capacity to collect more coins are more expensive to purchase. You will buy collectors using coins from your bank balance.</p>
                 <p>After every <span class='rounds'></span> rounds of play your collector tool will wear out and you will be required to purchase a new collector.</p>
             </div>
+
+            <div class="intro_show_rent">
+                <button type="button" style="pointer-events: none; font-size: 1rem; ">Rent Capacity for 4 Coins</button>
+                <div>
+                    If you fail to collect coins on a particular round, you will be given the option to rent another collector just for that round, which will allow you to collect all the available coins.
+                </div>
+            </div>
+
             <div>Each coin that you collect will add 1 coin to your balance. Each coin that you do not collect will not change your balance.</div>
-            <!--		<div>At the end of the game the number of coins that you have collected will be converted into real money at the rate of 1 coin = 1 cent, which you will receive as a bonus payment.</div>-->
+            <div>At the end of the game the number of coins that you have collected will be converted into real money at the rate of 1 coin = 1 cent, which you will receive as a bonus payment.</div>
+
             <br class="clearfix">
             <br>		
             <p>Good Luck!</p>
@@ -164,7 +136,13 @@
                     <td id="coins_move"></td>
                 </tr>
                 <tr>
-                    <td></td><td></td><td id='piggy'></td>
+
+                    <td class="text-right">
+                        <button type="button" id="btn-rent">Rent Capacity
+                    </td>
+                    <td></td>
+                    <td id='piggy'></td>
+
                 </tr>
                 <tr>
                     <td></td><td></td><td></td>
@@ -208,10 +186,7 @@
         <!-- credits -->
         <div id="credits">
             <p>Thank you for participating in the study.</p>
-        <!--    <p>Please enter the following code on Mturk to confirm your completion of this HIT<br />
-            <div id="completioncode"></div>
-            <p>Feel free to send any comments or thoughts about the study to the experimenter,<br>Sam Swift (samswift@berkeley.edu)</p>	-->
-        </p>
+
         <form class="text-center">
             <input type="button" id ="finish_button" value="Continue"/>
         </form>

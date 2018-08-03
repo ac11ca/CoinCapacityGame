@@ -1,14 +1,9 @@
 <?php
 
+
+require 'server_config.php';
+
 session_start();
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "ccg";
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
 $return_array = array();
 $Blocks = 0;
 $Rounds = 0;
